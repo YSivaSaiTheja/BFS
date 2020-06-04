@@ -1,0 +1,62 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public boolean isCousins(TreeNode root, int x, int y) {
+        if (root == null)
+            return false;
+            
+        /// Queue used for BFS function
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.offer(root);
+        
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            
+            /// Initializing 2 null nodes to set as xParent and yParent of x and y nodes
+            TreeNode xParent = null;
+            TreeNode yParent = null;
+            for (int i=0;i<size;i++) {
+                TreeNode current = queue.poll();
+                if (current.left != null) {
+                    if (current.left.val == x) { 
+                        /// Set xParent once x is found in the tree
+                        xParent = current;
+                        
+                    } if (current.left.val == y) { 
+                        /// Set yParent once y is found in the tree
+                        yParent = current;
+                      /// Add this node to the queue for it to be processed in next iteration  
+                    } queue.offer(current.left);
+                } if (current.right != null) {
+                    if (current.right.val == x) {
+                        /// Set xParent once x is found in right subtree
+                        xParent = current;
+                        
+                    } if (current.right.val == y) {
+                        /// Set yParent once y is found in right subtree
+                        yParent = current;
+                    } queue.offer(current.right);
+                }
+              /// If x and y have the same parent, x and y are siblings, not cousins
+            } if (xParent != null && xParent == yParent) 
+                return false;
+            /// If x and y have the same value at the same depth, but have different parents, they are cousins
+            if (xParent != null && yParent != null)
+                return true;
+        }
+        return false;
+    }
+}

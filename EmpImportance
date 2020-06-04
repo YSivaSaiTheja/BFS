@@ -1,0 +1,46 @@
+/*
+// Definition for Employee.
+class Employee {
+    public int id;
+    public int importance;
+    public List<Integer> subordinates;
+};
+*/
+
+class Solution {
+    public int getImportance(List<Employee> employees, int id) {
+        /// Using breadth first search
+        if (employees.size() == 0)
+            return 0;
+            
+        /// Using a HashMap to easily query each employee in the given list
+        Map<Integer,Employee> empMap = new HashMap<Integer,Employee>();
+        
+        /// Add all the employees to the HashMap, <ID, Employee>
+        for (int i=0;i<employees.size();i++) {
+            empMap.put(employees.get(i).id,employees.get(i));
+        }
+        Queue<Employee> queue = new LinkedList<Employee>();
+        Employee root_employee = empMap.get(id);
+        
+        /// Variable to keep track of variable importance
+        int importance = 0;
+        queue.offer(root_employee);
+        
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i=0; i<size; i++) {
+                Employee current = queue.poll();
+                
+                /// Adding the current employee's importance
+                importance += current.importance;
+                
+                /// Iterate over all subordinates of the current polled employee
+                for (int subordinate : current.subordinates) {
+                    queue.offer(empMap.get(subordinate));
+                } 
+            }
+        }
+        return importance;
+    }
+}
